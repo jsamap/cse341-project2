@@ -1,0 +1,31 @@
+// LOCAL
+### Get all categories
+GET http://localhost:3080/categories
+
+### Get category by ID
+GET http://localhost:3080/categories/555555555555555555555555
+
+### Create category
+POST http://localhost:3080/categories
+Content-Type: application/json
+
+{
+  "name": "Clothing",
+  "description": "no description..."
+}
+
+### Update category
+PUT http://localhost:3080/categories/555555555555555555555555
+Content-Type: application/json
+
+{
+  "name": "Clothing",
+  "description": "Apparel for men, women, and children"
+}
+
+### Delete category
+DELETE http://localhost:3080/categories/555555555555555555555555
+
+
+
+// PROD

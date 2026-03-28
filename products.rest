@@ -1,0 +1,45 @@
+// LOCAL
+### Get all products
+GET http://localhost:3080/products
+
+### Get product by ID
+GET http://localhost:3080/products/000000000000000000000005
+
+### Create product
+POST http://localhost:3080/products
+Content-Type: application/json
+
+{
+  "name": "Men's Jacket",
+  "description": "No description...",
+  "category": {
+    "$oid": "555555555555555555555555"
+  },
+  "price": 59.99,
+  "currency": "USD",
+  "stock": 75,
+  "rating": 4.6
+}
+
+### Update product
+PUT http://localhost:3080/products/000000000000000000000005
+Content-Type: application/json
+
+{
+  "name": "Men's Jacket",
+  "description": "Water-resistant jacket for outdoor activities",
+  "category": {
+    "$oid": "555555555555555555555555"
+  },
+  "price": 59.99,
+  "currency": "USD",
+  "stock": 75,
+  "rating": 4.6
+}
+
+### Delete product
+DELETE http://localhost:3080/products/000000000000000000000005
+
+
+
+// PROD
