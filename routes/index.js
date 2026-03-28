@@ -1,7 +1,9 @@
 const router = require("express").Router()
 
+router.use("/", require("./swagger"))
+
 router.get("/", (req, res) => {
-    //#swagger.tags=["INDEX"]
+    //#swagger.tags=["Index"]
     res.send("PROOJECT 2 INDEX")
 })
 
