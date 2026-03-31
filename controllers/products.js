@@ -1,77 +1,144 @@
-const mongodb = require("../data/database")
-const ObjectId = require("mongodb").ObjectId
+const mongodb = require("../data/database");
+const ObjectId = require("mongodb").ObjectId;
 
 const getAll = async (req, res) => {
-    //#swagger.tags=["Products"]
-    const result = await mongodb.getDatabase().db("project2").collection("products").find()
-    result.toArray().then((products) => {
-        res.setHeader("Content-Type", "application/json")
-        res.status(200).json(products)
-    })
-}
+  //#swagger.tags=["Products"]
+  try {
+    mongodb
+      .getDatabase()
+      .db("project2")
+      .collection("products")
+      .find()
+      .toArray((err, products) => {
+        if (err) {
+          res.status(400).json({ message: err });
+        }
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).json(products);
+      });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 const getSingle = async (req, res) => {
-    //#swagger.tags=["Products"]
-    const productId = new ObjectId(req.params.id)
-    const result = await mongodb.getDatabase().db("project2").collection("products").find({ _id: productId})
-    result.toArray().then((products) => {
-        res.setHeader("Content-Type", "application/json")
-        res.status(200).json(products[0])
-    })
-}
+  //#swagger.tags=["Products"]
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json("Must use a valid id to find a product.");
+    }
+
+    const productId = new ObjectId(req.params.id);
+    mongodb
+      .getDatabase()
+      .db("project2")
+      .collection("products")
+      .find({ _id: productId })
+      .toArray((err, result) => {
+        if (err) {
+          res.status(400).json({ message: err });
+        }
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).json(result[0]);
+      });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 const createProduct = async (req, res) => {
-    //#swagger.tags=["Products"]
+  //#swagger.tags=["Products"]
+  try {
     const product = {
-        name: req.body.name,
-        description: req.body.description,
-        category: req.body.category,
-        price: req.body.price,
-        currency: req.body.currency,
-        stock: req.body.stock,
-        rating: req.body.rating,
-    }
-    const response = await mongodb.getDatabase().db("project2").collection("products").insertOne(product)
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      currency: req.body.currency,
+      stock: req.body.stock,
+      rating: req.body.rating,
+    };
+    const response = await mongodb
+      .getDatabase()
+      .db("project2")
+      .collection("products")
+      .insertOne(product);
     if (response.acknowledged)
-        res.status(201).json({ id: response.insertedId })
+      res.status(201).json({ id: response.insertedId });
     else
-        res.status(500).json(response.error || "Some error ocurred while creating the product.")
-}
+      res
+        .status(500)
+        .json(
+          response.error || "Some error ocurred while creating the product.",
+        );
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 const updateProduct = async (req, res) => {
-    //#swagger.tags=["Products"]
-    const productId = new ObjectId(req.params.id)
-    const product = {
-        name: req.body.name,
-        description: req.body.description,
-        category: req.body.category,
-        price: req.body.price,
-        currency: req.body.currency,
-        stock: req.body.stock,
-        rating: req.body.rating,
+  //#swagger.tags=["Products"]
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json("Must use a valid id to update a product.");
     }
-    const response = await mongodb.getDatabase().db("project2").collection("products").replaceOne({_id: productId}, product)
-    if (response.modifiedCount > 0)
-        res.status(204).send()
+    const productId = new ObjectId(req.params.id);
+    const product = {
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      currency: req.body.currency,
+      stock: req.body.stock,
+      rating: req.body.rating,
+    };
+    const response = await mongodb
+      .getDatabase()
+      .db("project2")
+      .collection("products")
+      .replaceOne({ _id: productId }, product);
+    if (response.modifiedCount > 0) res.status(204).send();
     else
-        res.status(500).json(response.error || "Some error ocurred while updating the product.")
-}
+      res
+        .status(500)
+        .json(
+          response.error || "Some error ocurred while updating the product.",
+        );
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 const deleteProduct = async (req, res) => {
-    //#swagger.tags=["Products"]
-    const productId = new ObjectId(req.params.id)
-    const result = await mongodb.getDatabase().db("project2").collection("products").deleteOne({ _id: productId})
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "Product not found" });
+  //#swagger.tags=["Products"]
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json("Must use a valid id to delete a product.");
     }
-
-    return res.status(204).send(); // or res.status(200).json(result);
-}
+    const productId = new ObjectId(req.params.id);
+    const response = await mongodb
+      .getDatabase()
+      .db("project2")
+      .collection("products")
+      .deleteOne({ _id: productId });
+    if (response.deletedCount > 0) {
+      res.status(204).send();
+    } else {
+      res
+        .status(500)
+        .json(
+          response.error || "Some error occurred while deleting the product.",
+        );
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
-    getAll,
-    getSingle,
-    createProduct,
-    updateProduct,
-    deleteProduct
-}
+  getAll,
+  getSingle,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};
