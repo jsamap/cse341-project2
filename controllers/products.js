@@ -4,18 +4,14 @@ const ObjectId = require("mongodb").ObjectId;
 const getAll = async (req, res) => {
   //#swagger.tags=["Products"]
   try {
-    mongodb
+    const products = await mongodb
       .getDatabase()
       .db("project2")
       .collection("products")
       .find()
-      .toArray((err, products) => {
-        if (err) {
-          res.status(400).json({ message: err });
-        }
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(products);
-      });
+      .toArray()
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -29,18 +25,14 @@ const getSingle = async (req, res) => {
     }
 
     const productId = new ObjectId(req.params.id);
-    mongodb
+    const products = await mongodb
       .getDatabase()
       .db("project2")
       .collection("products")
       .find({ _id: productId })
-      .toArray((err, result) => {
-        if (err) {
-          res.status(400).json({ message: err });
-        }
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(result[0]);
-      });
+      .toArray()
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(products[0]);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

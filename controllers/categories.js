@@ -4,18 +4,16 @@ const ObjectId = require("mongodb").ObjectId;
 const getAll = async (req, res) => {
   //#swagger.tags=["Categories"]
   try {
-    mongodb
+    const categories = await mongodb
       .getDatabase()
       .db("project2")
       .collection("categories")
       .find()
-      .toArray((err, contacts) => {
-        if (err) {
-          res.status(400).json({ message: err });
-        }
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(contacts);
-      });
+      .toArray()
+
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).json(categories);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -29,18 +27,14 @@ const getSingle = async (req, res) => {
     }
 
     const categoryId = new ObjectId(req.params.id);
-    mongodb
+    const categories = await mongodb
       .getDatabase()
       .db("project2")
       .collection("categories")
       .find({ _id: categoryId })
-      .toArray((err, result) => {
-        if (err) {
-          res.status(400).json({ message: err });
-        }
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(result[0]);
-      });
+      .toArray()
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(categories[0]);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
