@@ -1,17 +1,17 @@
-const express = require("express")
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-const productsController = require("../controllers/products")
-const validation = require('../middleware/validate')
+const productsController = require("../controllers/products");
+const validation = require("../middleware/validate");
 
-router.get("/", productsController.getAll)
+router.get("/", productsController.getAll);
 
-router.get("/:id", productsController.getSingle)
+router.get("/:id", productsController.getSingle);
 
-router.post("/", validation.saveProduct, productsController.createProduct)
+router.post("/", validation.saveProduct, productsController.createProduct);
 
-router.put("/:id", validation.saveProduct, productsController.updateProduct)
+router.put("/:id", validation.saveProduct, productsController.updateProduct);
 
-router.delete("/:id", productsController.deleteProduct)
+router.delete("/:id", productsController.deleteProduct);
 
 module.exports = router;

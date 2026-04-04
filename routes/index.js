@@ -1,14 +1,27 @@
-const router = require("express").Router()
+const passport = require("passport");
 
-router.use("/", require("./swagger"))
+const router = require("express").Router();
 
-router.get("/", (req, res) => {
-    //#swagger.tags=["Index"]
-    res.send("PROOJECT 2 INDEX")
-})
+router.use("/", require("./swagger"));
 
-router.use("/categories", require("./categories"))
+// router.get("/", (req, res) => {
+//     //#swagger.tags=["Index"]
+//     res.send("PROOJECT 2 INDEX");
+// });
 
-router.use("/products", require("./products"))
+router.use("/categories", require("./categories"));
 
-module.exports = router
+router.use("/products", require("./products"));
+
+router.get("/login", passport.authenticate("github"), (req, res) => {});
+
+router.get("/logout", function (req, res, next) {
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/");
+    });
+});
+
+module.exports = router;
